@@ -5,7 +5,7 @@ import { formatPrice } from '../utils/formatters';
 import './AdminInventoryPage.css';
 
 const AdminInventoryPage = () => {
-  const { products } = useProducts();
+  const { products, updateProduct, addProduct, deleteProduct } = useProducts();
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
@@ -65,17 +65,41 @@ const AdminInventoryPage = () => {
     setShowModal(true);
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // In a real app, this would save to backend
-    alert(editingProduct ? 'Producto actualizado' : 'Producto creado');
+    
+    const productData = {
+      ...formData,
+      precio: parseFloat(formData.precio),
+      stock: parseInt(formData.stock)
+    };
+
+    if (editingProduct) {
+      // Update existing product
+      updateProduct({ ...productData, id: editingProduct.id });
+      alert('✅ Producto actualizado correctamente');
+    } else {
+      // Add new product
+      addProduct(productData);
+      alert('✅ Producto creado correctamente');
+    }
+    
     setShowModal(false);
+    setEditingProduct(null);
   };
 
   const handleDelete = (productId) => {
-    if (window.confirm('¿Estás seguro de eliminar este producto?')) {
-      // In a real app, this would delete from backend
-      alert('Producto eliminado');
+    if (window.confirm('¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.')) {
+      deleteProduct(productId);
+      alert('✅ Producto eliminado correctamente');
     }
   };
 

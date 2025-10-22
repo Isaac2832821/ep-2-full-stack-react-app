@@ -12,14 +12,52 @@ export const useProducts = () => {
 };
 
 export const ProductProvider = ({ children }) => {
-  const [products, setProducts] = useState(initialProducts);
-  const [filteredProducts, setFilteredProducts] = useState(initialProducts);
-  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [filters, setFilters] = useState({
     category: '',
     priceRange: '',
     searchQuery: ''
   });
+
+  // Load products from localStorage or use initial products
+  useEffect(() => {
+    const savedProducts = localStorage.getItem('productos');
+    if (savedProducts) {
+      try {
+        const parsed = JSON.parse(savedProducts);
+        setProducts(parsed);
+        setFilteredProducts(parsed);
+      } catch (error) {
+        console.error('Error loading products:', error);
+        setProducts(initialProducts);
+        setFilteredProducts(initialProducts);
+        localStorage.setItem('productos', JSON.stringify(initialProducts));
+      }
+    } else {
+      // First time: save initial products to localStorage
+      setProducts(initialProducts);
+      setFilteredProducts(initialProducts);
+      localStorage.setItem('productos', JSON.stringify(initialProducts));
+    }
+  }, []);
+
+  // Listen for storage changes (when admin updates products)
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'productos' && e.newValue) {
+        try {
+          const updatedProducts = JSON.parse(e.newValue);
+          setProducts(updatedProducts);
+        } catch (error) {
+          console.error('Error parsing updated products:', error);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   // Apply filters whenever products or filters change
   useEffect(() => {
@@ -76,6 +114,31 @@ export const ProductProvider = ({ children }) => {
     return products.find(p => p.id === parseInt(id));
   };
 
+  const updateProduct = (updatedProduct) => {
+    const updatedProducts = products.map(p =>
+      p.id === updatedProduct.id ? updatedProduct : p
+    );
+    setProducts(updatedProducts);
+    localStorage.setItem('productos', JSON.stringify(updatedProducts));
+  };
+
+  const addProduct = (newProduct) => {
+    const productWithId = {
+      ...newProduct,
+      id: Date.now()
+    };
+    const updatedProducts = [...products, productWithId];
+    setProducts(updatedProducts);
+    localStorage.setItem('productos', JSON.stringify(updatedProducts));
+    return productWithId;
+  };
+
+  const deleteProduct = (productId) => {
+    const updatedProducts = products.filter(p => p.id !== productId);
+    setProducts(updatedProducts);
+    localStorage.setItem('productos', JSON.stringify(updatedProducts));
+  };
+
   const value = {
     products,
     filteredProducts,
@@ -85,7 +148,10 @@ export const ProductProvider = ({ children }) => {
     filterByPrice,
     searchProducts,
     clearFilters,
-    getProductById
+    getProductById,
+    updateProduct,
+    addProduct,
+    deleteProduct
   };
 
   return <ProductContext.Provider value={value}>{children}</ProductContext.Provider>;

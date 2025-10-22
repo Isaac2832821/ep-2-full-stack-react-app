@@ -58,7 +58,12 @@ const LoginForm = () => {
     const result = await login(formData);
 
     if (result.success) {
-      navigate('/');
+      // Redirect to admin panel if user is admin, otherwise to home
+      if (result.user && result.user.rol === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } else {
       setServerError(result.error || 'Error al iniciar sesión');
     }

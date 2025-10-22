@@ -12,12 +12,16 @@ const AdminOrdersPage = () => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    // Load orders from localStorage or use mock data
+    // Load orders from localStorage (check both 'orders' and 'ventas')
     const savedOrders = localStorage.getItem('orders');
-    if (savedOrders) {
-      const parsedOrders = JSON.parse(savedOrders);
-      setOrders(parsedOrders);
-      setFilteredOrders(parsedOrders);
+    const savedVentas = localStorage.getItem('ventas');
+    
+    if (savedOrders || savedVentas) {
+      const ordersData = savedOrders ? JSON.parse(savedOrders) : [];
+      const ventasData = savedVentas ? JSON.parse(savedVentas) : [];
+      const allOrders = [...ordersData, ...ventasData];
+      setOrders(allOrders);
+      setFilteredOrders(allOrders);
     } else {
       // Mock data
       const mockOrders = [
@@ -72,15 +76,16 @@ const AdminOrdersPage = () => {
 
     // Filter by status
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(order => order.status === statusFilter);
+      filtered = filtered.filter(order => (order.status || order.estado) === statusFilter);
     }
 
     // Filter by search term
     if (searchTerm) {
-      filtered = filtered.filter(order =>
-        order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.customer.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      filtered = filtered.filter(order => {
+        const customerName = typeof order.customer === 'object' ? order.customer.nombre : order.customer;
+        return order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               customerName.toLowerCase().includes(searchTerm.toLowerCase());
+      });
     }
 
     setFilteredOrders(filtered);
@@ -88,7 +93,7 @@ const AdminOrdersPage = () => {
 
   const handleStatusChange = (orderId, newStatus) => {
     const updatedOrders = orders.map(order =>
-      order.id === orderId ? { ...order, status: newStatus } : order
+      order.id === orderId ? { ...order, status: newStatus, estado: newStatus } : order
     );
     setOrders(updatedOrders);
     localStorage.setItem('orders', JSON.stringify(updatedOrders));
@@ -132,7 +137,7 @@ const AdminOrdersPage = () => {
   };
 
   const getStatusCount = (status) => {
-    return orders.filter(order => order.status === status).length;
+    return orders.filter(order => (order.status || order.estado) === status).length;
   };
 
   return (
@@ -262,12 +267,12 @@ const AdminOrdersPage = () => {
                     filteredOrders.map((order) => (
                       <tr key={order.id}>
                         <td className="fw-semibold">{order.id}</td>
-                        <td>{order.customer}</td>
-                        <td>{formatDate(order.date)}</td>
+                        <td>{typeof order.customer === 'object' ? order.customer.nombre : order.customer}</td>
+                        <td>{formatDate(order.date || order.fecha)}</td>
                         <td>
                           <select
                             className="form-select form-select-sm"
-                            value={order.status}
+                            value={order.status || order.estado}
                             onChange={(e) => handleStatusChange(order.id, e.target.value)}
                           >
                             <option value="pending">Pendiente</option>
@@ -312,15 +317,15 @@ const AdminOrdersPage = () => {
                 <div className="row mb-3">
                   <div className="col-md-6">
                     <h5>Información del Cliente</h5>
-                    <p><strong>Nombre:</strong> {selectedOrder.customer}</p>
-                    <p><strong>Email:</strong> {selectedOrder.email}</p>
-                    <p><strong>Teléfono:</strong> {selectedOrder.phone}</p>
+                    <p><strong>Nombre:</strong> {typeof selectedOrder.customer === 'object' ? selectedOrder.customer.nombre : selectedOrder.customer}</p>
+                    <p><strong>Email:</strong> {typeof selectedOrder.customer === 'object' ? selectedOrder.customer.email : selectedOrder.email}</p>
+                    <p><strong>Teléfono:</strong> {typeof selectedOrder.customer === 'object' ? selectedOrder.customer.telefono : selectedOrder.phone}</p>
                   </div>
                   <div className="col-md-6">
                     <h5>Información del Pedido</h5>
-                    <p><strong>Fecha:</strong> {formatDate(selectedOrder.date)}</p>
-                    <p><strong>Estado:</strong> {getStatusBadge(selectedOrder.status)}</p>
-                    <p><strong>Dirección:</strong> {selectedOrder.shippingAddress}</p>
+                    <p><strong>Fecha:</strong> {formatDate(selectedOrder.date || selectedOrder.fecha)}</p>
+                    <p><strong>Estado:</strong> {getStatusBadge(selectedOrder.status || selectedOrder.estado)}</p>
+                    <p><strong>Dirección:</strong> {selectedOrder.shippingAddress || (selectedOrder.shipping ? `${selectedOrder.shipping.direccion}, ${selectedOrder.shipping.comuna}, ${selectedOrder.shipping.region}` : 'N/A')}</p>
                   </div>
                 </div>
                 <h5>Productos</h5>

@@ -16,6 +16,22 @@ export const AuthProvider = ({ children }) => {
 
   // Initialize default admin user and load current user
   useEffect(() => {
+    // Migrate old data structure if needed
+    try {
+      const savedUser = localStorage.getItem('usuarioActual');
+      if (savedUser) {
+        const parsed = JSON.parse(savedUser);
+        // If user object doesn't have the expected structure, clear it
+        if (typeof parsed !== 'object' || Array.isArray(parsed)) {
+          console.warn('⚠️ Limpiando datos de usuario inválidos');
+          localStorage.removeItem('usuarioActual');
+        }
+      }
+    } catch (error) {
+      console.error('Error al migrar datos:', error);
+      localStorage.removeItem('usuarioActual');
+    }
+
     // Create default admin user if it doesn't exist
     const users = JSON.parse(localStorage.getItem('usuarios') || '[]');
     const adminExists = users.some(u => u.email === 'admin@pasoxpaso.cl');
@@ -69,7 +85,7 @@ export const AuthProvider = ({ children }) => {
         const { password, ...userWithoutPassword } = foundUser;
         setUser(userWithoutPassword);
         localStorage.setItem('usuarioActual', JSON.stringify(userWithoutPassword));
-        return { success: true };
+        return { success: true, user: userWithoutPassword };
       }
 
       return { success: false, error: 'Credenciales inválidas' };
@@ -96,7 +112,8 @@ export const AuthProvider = ({ children }) => {
       const newUser = {
         ...userData,
         id: Date.now(),
-        isAdmin: false
+        rol: 'usuario',
+        fechaRegistro: new Date().toISOString()
       };
 
       // Save to localStorage
@@ -129,7 +146,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     isAuthenticated: !!user,
-    isAdmin: user?.isAdmin || false
+    isAdmin: user?.rol === 'admin' || user?.isAdmin || false
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

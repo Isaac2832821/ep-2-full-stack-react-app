@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { formatDate } from '../utils/formatters';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
@@ -82,8 +81,8 @@ const ProfilePage = () => {
                       <span className="info-value">{user.nombre}</span>
                     </div>
                     <div className="info-item">
-                      <span className="info-label">RUN:</span>
-                      <span className="info-value">{user.run}</span>
+                      <span className="info-label">RUT:</span>
+                      <span className="info-value">{user.rut || 'No especificado'}</span>
                     </div>
                     <div className="info-item">
                       <span className="info-label">Email:</span>
