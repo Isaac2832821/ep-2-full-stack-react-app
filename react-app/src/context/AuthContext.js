@@ -14,8 +14,35 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Load user from localStorage on mount
+  // Initialize default admin user and load current user
   useEffect(() => {
+    // Create default admin user if it doesn't exist
+    const users = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    const adminExists = users.some(u => u.email === 'admin@pasoxpaso.cl');
+    
+    if (!adminExists) {
+      const defaultAdmin = {
+        id: 1,
+        nombre: 'Administrador',
+        email: 'admin@pasoxpaso.cl',
+        password: 'admin123',
+        telefono: '+56 9 1234 5678',
+        rut: '12.345.678-9',
+        direccion: 'Av. Providencia 1234',
+        region: 'Región Metropolitana',
+        comuna: 'Santiago',
+        rol: 'admin',
+        fechaRegistro: new Date().toISOString()
+      };
+      
+      users.push(defaultAdmin);
+      localStorage.setItem('usuarios', JSON.stringify(users));
+      console.log('✅ Usuario admin creado por defecto');
+      console.log('📧 Email: admin@pasoxpaso.cl');
+      console.log('🔑 Password: admin123');
+    }
+    
+    // Load current user from localStorage
     const savedUser = localStorage.getItem('usuarioActual');
     if (savedUser) {
       try {
