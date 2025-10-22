@@ -47,8 +47,8 @@ const CartSummary = ({ items, onCheckout }) => {
       onCheckout();
     }
 
-    // Navigate to confirmation page
-    navigate('/confirmacion');
+    // Navigate to checkout page
+    navigate('/checkout');
   };
 
   return (
