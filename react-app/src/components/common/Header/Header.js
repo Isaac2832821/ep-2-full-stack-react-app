@@ -8,7 +8,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { itemCount } = useCart();
-  const { user, isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);

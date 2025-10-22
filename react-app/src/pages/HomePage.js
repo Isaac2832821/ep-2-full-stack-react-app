@@ -85,9 +85,9 @@ const HomePage = () => {
             <div className="col-12 col-md-4 mb-4 mb-md-0">
               <h3>PasoxPaso</h3>
               <div className="social-links mt-3">
-                <a href="#" className="btn btn-outline-primary me-2">📘</a>
-                <a href="#" className="btn btn-outline-info me-2">🐦</a>
-                <a href="#" className="btn btn-outline-danger">📷</a>
+                <button className="btn btn-outline-primary me-2" onClick={() => alert('Próximamente')}>📘</button>
+                <button className="btn btn-outline-info me-2" onClick={() => alert('Próximamente')}>🐦</button>
+                <button className="btn btn-outline-danger" onClick={() => alert('Próximamente')}>📷</button>
               </div>
             </div>
             <div className="col-12 col-md-4 mb-4 mb-md-0">

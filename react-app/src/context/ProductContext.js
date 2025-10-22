@@ -142,7 +142,6 @@ export const ProductProvider = ({ children }) => {
   const value = {
     products,
     filteredProducts,
-    loading,
     filters,
     filterByCategory,
     filterByPrice,

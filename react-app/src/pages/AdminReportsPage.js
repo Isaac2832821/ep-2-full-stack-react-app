@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import AdminLayout from '../components/admin/AdminLayout/AdminLayout';
-import { formatPrice, formatDate } from '../utils/formatters';
+import { formatPrice } from '../utils/formatters';
 import './AdminReportsPage.css';
 
 const AdminReportsPage = () => {
