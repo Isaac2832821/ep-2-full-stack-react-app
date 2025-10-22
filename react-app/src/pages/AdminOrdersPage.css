@@ -1,0 +1,227 @@
+/* Admin Orders Page Styles */
+.orders-page {
+  animation: fadeIn 0.3s ease-in;
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-header h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Status Filter Cards */
+.status-filter-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #e9ecef;
+  height: 100%;
+}
+
+.status-filter-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.status-filter-card.active {
+  border-color: #0d6efd;
+  background-color: #f8f9fa;
+}
+
+.status-count {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 0.5rem;
+}
+
+.status-label {
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.status-filter-card.status-pending.active {
+  border-color: #ffc107;
+  background-color: #fff3cd;
+}
+
+.status-filter-card.status-pending.active .status-count {
+  color: #ffc107;
+}
+
+.status-filter-card.status-processing.active {
+  border-color: #17a2b8;
+  background-color: #d1ecf1;
+}
+
+.status-filter-card.status-processing.active .status-count {
+  color: #17a2b8;
+}
+
+.status-filter-card.status-shipped.active {
+  border-color: #0d6efd;
+  background-color: #cfe2ff;
+}
+
+.status-filter-card.status-shipped.active .status-count {
+  color: #0d6efd;
+}
+
+.status-filter-card.status-completed.active {
+  border-color: #28a745;
+  background-color: #d4edda;
+}
+
+.status-filter-card.status-completed.active .status-count {
+  color: #28a745;
+}
+
+.status-filter-card.status-cancelled.active {
+  border-color: #dc3545;
+  background-color: #f8d7da;
+}
+
+.status-filter-card.status-cancelled.active .status-count {
+  color: #dc3545;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.btn-close:hover {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-body h5 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 1rem;
+}
+
+.modal-body p {
+  margin-bottom: 0.5rem;
+  color: #495057;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions button {
+    flex: 1;
+  }
+
+  .status-filter-card {
+    padding: 1rem;
+  }
+
+  .status-count {
+    font-size: 1.5rem;
+  }
+
+  .status-label {
+    font-size: 0.75rem;
+  }
+
+  .modal-content {
+    margin: 1rem;
+  }
+
+  .modal-header {
+    padding: 1rem;
+  }
+
+  .modal-header h3 {
+    font-size: 1.25rem;
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+}

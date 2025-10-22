@@ -1,0 +1,16 @@
+/* Login Page Styles */
+.login-page {
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 200px);
+}
+
+.login-section {
+  padding: 2rem 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .login-section {
+    padding: 1rem 0;
+  }
+}

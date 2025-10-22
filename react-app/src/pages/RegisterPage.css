@@ -1,0 +1,16 @@
+/* Register Page Styles */
+.register-page {
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 200px);
+}
+
+.register-section {
+  padding: 2rem 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .register-section {
+    padding: 1rem 0;
+  }
+}
