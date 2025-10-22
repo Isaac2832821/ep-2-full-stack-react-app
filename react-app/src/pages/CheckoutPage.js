@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { formatPrice } from '../utils/formatters';
@@ -9,8 +9,13 @@ import './CheckoutPage.css';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
-  const { cart, getCartTotal, clearCart } = useCart();
+  const { items: cart, getTotal, clearCart } = useCart();
   const { user } = useAuth();
+
+  // Debug: ver qué hay en el carrito
+  console.log('Cart items:', cart);
+  console.log('Cart length:', cart?.length);
+  console.log('Cart is array:', Array.isArray(cart));
 
   const [formData, setFormData] = useState({
     nombre: user?.nombre || '',
@@ -31,16 +36,39 @@ const CheckoutPage = () => {
   const [errors, setErrors] = useState({});
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const subtotal = getCartTotal();
+  const subtotal = getTotal();
   const iva = subtotal * 0.19;
   const total = subtotal + iva;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let formattedValue = value;
+
+    // Format card number (add spaces every 4 digits)
+    if (name === 'cardNumber') {
+      formattedValue = value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
+      formattedValue = formattedValue.slice(0, 19); // Max 16 digits + 3 spaces
+    }
+
+    // Format expiry date (MM/YY)
+    if (name === 'cardExpiry') {
+      formattedValue = value.replace(/\D/g, '');
+      if (formattedValue.length >= 2) {
+        formattedValue = formattedValue.slice(0, 2) + '/' + formattedValue.slice(2, 4);
+      }
+      formattedValue = formattedValue.slice(0, 5);
+    }
+
+    // Format CVV (only numbers, max 3)
+    if (name === 'cardCVV') {
+      formattedValue = value.replace(/\D/g, '').slice(0, 3);
+    }
+
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: formattedValue
     }));
+    
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -71,17 +99,30 @@ const CheckoutPage = () => {
 
     // Payment validation
     if (formData.paymentMethod === 'credit-card') {
+      const cardDigits = formData.cardNumber.replace(/\s/g, '');
+      
       if (!validateRequired(formData.cardNumber)) {
         newErrors.cardNumber = 'El número de tarjeta es requerido';
-      } else if (formData.cardNumber.replace(/\s/g, '').length !== 16) {
-        newErrors.cardNumber = 'Número de tarjeta inválido';
+      } else if (cardDigits.length !== 16) {
+        newErrors.cardNumber = `Debe tener 16 dígitos (tienes ${cardDigits.length})`;
+      } else if (!/^\d+$/.test(cardDigits)) {
+        newErrors.cardNumber = 'Solo se permiten números';
       }
-      if (!validateRequired(formData.cardName)) newErrors.cardName = 'El nombre es requerido';
-      if (!validateRequired(formData.cardExpiry)) newErrors.cardExpiry = 'La fecha es requerida';
+      
+      if (!validateRequired(formData.cardName)) {
+        newErrors.cardName = 'El nombre es requerido';
+      }
+      
+      if (!validateRequired(formData.cardExpiry)) {
+        newErrors.cardExpiry = 'La fecha es requerida';
+      } else if (!/^\d{2}\/\d{2}$/.test(formData.cardExpiry)) {
+        newErrors.cardExpiry = 'Formato inválido (MM/YY)';
+      }
+      
       if (!validateRequired(formData.cardCVV)) {
         newErrors.cardCVV = 'El CVV es requerido';
       } else if (formData.cardCVV.length !== 3) {
-        newErrors.cardCVV = 'CVV inválido';
+        newErrors.cardCVV = `CVV debe tener 3 dígitos (tienes ${formData.cardCVV.length})`;
       }
     }
 
@@ -103,7 +144,7 @@ const CheckoutPage = () => {
       // Create order
       const order = {
         id: `ORD-${Date.now()}`,
-        date: new Date().toISOString(),
+        fecha: new Date().toISOString(),
         items: cart,
         customer: {
           nombre: formData.nombre,
@@ -123,13 +164,13 @@ const CheckoutPage = () => {
         subtotal,
         iva,
         total,
-        status: 'pending'
+        estado: 'pending'
       };
 
-      // Save order to localStorage
-      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-      orders.push(order);
-      localStorage.setItem('orders', JSON.stringify(orders));
+      // Save order to localStorage (using 'ventas' key for compatibility)
+      const orders = JSON.parse(localStorage.getItem('ventas') || '[]');
+      orders.unshift(order); // Add to beginning
+      localStorage.setItem('ventas', JSON.stringify(orders));
 
       // Clear cart
       clearCart();
@@ -143,12 +184,14 @@ const CheckoutPage = () => {
 
   const comunas = formData.region ? REGIONES_COMUNAS[formData.region] || [] : [];
 
-  if (cart.length === 0) {
+  // Verificar si el carrito está vacío o no existe
+  if (!cart || !Array.isArray(cart) || cart.length === 0) {
     return (
       <div className="container py-5">
         <div className="alert alert-warning text-center">
           <h3>Tu carrito está vacío</h3>
           <p>Agrega productos antes de proceder al pago</p>
+          <p className="text-muted small">Debug: cart = {JSON.stringify(cart)}</p>
           <button className="btn btn-primary" onClick={() => navigate('/productos')}>
             Ver Productos
           </button>
@@ -165,10 +208,10 @@ const CheckoutPage = () => {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb mb-0">
               <li className="breadcrumb-item">
-                <a href="/">Home</a>
+                <Link to="/">Home</Link>
               </li>
               <li className="breadcrumb-item">
-                <a href="/carrito">Carrito</a>
+                <Link to="/carrito">Carrito</Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
                 Checkout
@@ -345,17 +388,28 @@ const CheckoutPage = () => {
                   {formData.paymentMethod === 'credit-card' && (
                     <>
                       <div className="mb-3">
-                        <label className="form-label">Número de Tarjeta *</label>
-                        <input
-                          type="text"
-                          className={`form-control ${errors.cardNumber ? 'is-invalid' : ''}`}
-                          name="cardNumber"
-                          value={formData.cardNumber}
-                          onChange={handleChange}
-                          placeholder="1234 5678 9012 3456"
-                          maxLength="19"
-                        />
-                        {errors.cardNumber && <div className="invalid-feedback">{errors.cardNumber}</div>}
+                        <label className="form-label">
+                          Número de Tarjeta *
+                          <small className="text-muted ms-2">
+                            ({formData.cardNumber.replace(/\s/g, '').length}/16 dígitos)
+                          </small>
+                        </label>
+                        <div className="input-group">
+                          <span className="input-group-text">
+                            <i className="fas fa-credit-card"></i>
+                          </span>
+                          <input
+                            type="text"
+                            className={`form-control ${errors.cardNumber ? 'is-invalid' : ''}`}
+                            name="cardNumber"
+                            value={formData.cardNumber}
+                            onChange={handleChange}
+                            placeholder="1234 5678 9012 3456"
+                            maxLength="19"
+                            inputMode="numeric"
+                          />
+                          {errors.cardNumber && <div className="invalid-feedback">{errors.cardNumber}</div>}
+                        </div>
                       </div>
 
                       <div className="mb-3">
@@ -373,30 +427,51 @@ const CheckoutPage = () => {
 
                       <div className="row">
                         <div className="col-md-6 mb-3">
-                          <label className="form-label">Fecha de Expiración *</label>
-                          <input
-                            type="text"
-                            className={`form-control ${errors.cardExpiry ? 'is-invalid' : ''}`}
-                            name="cardExpiry"
-                            value={formData.cardExpiry}
-                            onChange={handleChange}
-                            placeholder="MM/AA"
-                            maxLength="5"
-                          />
-                          {errors.cardExpiry && <div className="invalid-feedback">{errors.cardExpiry}</div>}
+                          <label className="form-label">
+                            Fecha de Expiración *
+                            <small className="text-muted ms-2">(MM/YY)</small>
+                          </label>
+                          <div className="input-group">
+                            <span className="input-group-text">
+                              <i className="fas fa-calendar"></i>
+                            </span>
+                            <input
+                              type="text"
+                              className={`form-control ${errors.cardExpiry ? 'is-invalid' : ''}`}
+                              name="cardExpiry"
+                              value={formData.cardExpiry}
+                              onChange={handleChange}
+                              placeholder="MM/YY"
+                              maxLength="5"
+                            />
+                            {errors.cardExpiry && <div className="invalid-feedback">{errors.cardExpiry}</div>}
+                          </div>
                         </div>
                         <div className="col-md-6 mb-3">
-                          <label className="form-label">CVV *</label>
-                          <input
-                            type="text"
-                            className={`form-control ${errors.cardCVV ? 'is-invalid' : ''}`}
-                            name="cardCVV"
-                            value={formData.cardCVV}
-                            onChange={handleChange}
-                            placeholder="123"
-                            maxLength="3"
-                          />
-                          {errors.cardCVV && <div className="invalid-feedback">{errors.cardCVV}</div>}
+                          <label className="form-label">
+                            CVV *
+                            <small className="text-muted ms-2">(3 dígitos)</small>
+                          </label>
+                          <div className="input-group">
+                            <span className="input-group-text">
+                              <i className="fas fa-lock"></i>
+                            </span>
+                            <input
+                              type="text"
+                              className={`form-control ${errors.cardCVV ? 'is-invalid' : ''}`}
+                              name="cardCVV"
+                              value={formData.cardCVV}
+                              onChange={handleChange}
+                              placeholder="123"
+                              maxLength="3"
+                              inputMode="numeric"
+                            />
+                            {errors.cardCVV && <div className="invalid-feedback">{errors.cardCVV}</div>}
+                          </div>
+                          <small className="text-muted">
+                            <i className="fas fa-info-circle me-1"></i>
+                            Los 3 dígitos al reverso de tu tarjeta
+                          </small>
                         </div>
                       </div>
                     </>

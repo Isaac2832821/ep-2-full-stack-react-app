@@ -18,22 +18,9 @@ const CartPage = () => {
     .slice(0, 4);
 
   const handleCheckout = () => {
-    // Create order
-    const order = {
-      id: Date.now(),
-      fecha: new Date().toISOString(),
-      items: [...items],
-      total: items.reduce((sum, item) => sum + (item.precio * item.cantidad), 0),
-      estado: 'pending'
-    };
-
-    // Save to localStorage
-    const orders = JSON.parse(localStorage.getItem('ventas') || '[]');
-    orders.unshift(order);
-    localStorage.setItem('ventas', JSON.stringify(orders));
-
-    // Clear cart
-    clearCart();
+    // Don't clear cart here - it will be cleared after payment confirmation
+    // Just let CartSummary navigate to checkout
+    console.log('CartPage handleCheckout called - NOT clearing cart');
   };
 
   const handleAddToCart = (product) => {

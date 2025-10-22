@@ -110,3 +110,40 @@
     font-size: 1rem;
   }
 }
+
+/* Map Container */
+.map-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.map-card h5 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.map-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.map-container iframe {
+  display: block;
+  width: 100%;
+}
+
+/* Map responsive */
+@media (max-width: 767px) {
+  .map-container iframe {
+    height: 300px !important;
+  }
+
+  .map-card {
+    padding: 1rem;
+  }
+}

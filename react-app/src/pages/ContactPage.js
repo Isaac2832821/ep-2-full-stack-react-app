@@ -236,11 +236,34 @@ const ContactPage = () => {
                 </div>
               </div>
 
-              {/* Map Placeholder */}
+              {/* Google Maps */}
               <div className="map-card mt-4">
-                <div className="map-placeholder">
-                  <i className="fas fa-map fa-3x text-muted"></i>
-                  <p className="mt-3 text-muted">Mapa de ubicación</p>
+                <h5 className="mb-3">
+                  <i className="fas fa-map-marker-alt me-2"></i>
+                  Encuéntranos
+                </h5>
+                <div className="map-container">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3330.2089489856847!2d-70.61116492346795!3d-33.42494097340089!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662cf5c8eb5f0e5%3A0x8d5f8f8f8f8f8f8f!2sAv.%20Providencia%2C%20Providencia%2C%20Regi%C3%B3n%20Metropolitana%2C%20Chile!5e0!3m2!1ses!2scl!4v1234567890123!5m2!1ses!2scl"
+                    width="100%"
+                    height="400"
+                    style={{ border: 0, borderRadius: '12px' }}
+                    allowFullScreen=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Ubicación de PasoxPaso"
+                  ></iframe>
+                </div>
+                <div className="mt-3 text-center">
+                  <a
+                    href="https://www.google.com/maps/search/Av.+Providencia+1234,+Santiago,+Chile"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-outline-primary btn-sm"
+                  >
+                    <i className="fas fa-directions me-2"></i>
+                    Cómo llegar
+                  </a>
                 </div>
               </div>
             </div>

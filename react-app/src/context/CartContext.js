@@ -38,20 +38,24 @@ export const CartProvider = ({ children }) => {
         const existingItem = prevItems.find(item => item.id === product.id);
         
         if (existingItem) {
-          return prevItems.map(item =>
+          const updated = prevItems.map(item =>
             item.id === product.id
               ? { ...item, cantidad: item.cantidad + quantity }
               : item
           );
+          console.log('Updated cart:', updated);
+          return updated;
         }
         
-        return [...prevItems, {
+        const newCart = [...prevItems, {
           id: product.id,
           nombre: product.nombre,
           precio: product.precio,
           cantidad: quantity,
           imagen: product.imagen
         }];
+        console.log('New cart:', newCart);
+        return newCart;
       });
     } finally {
       setLoading(false);
