@@ -26,6 +26,7 @@ import AdminReportsPage from './pages/AdminReportsPage';
 import AdminEmployeesPage from './pages/AdminEmployeesPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import AdminNewUserPage from './pages/AdminNewUserPage';
+import MyOrdersPage from './pages/MyOrdersPage';
 import ProtectedRoute from './components/auth/ProtectedRoute/ProtectedRoute';
 
 function App() {
@@ -48,6 +49,11 @@ function App() {
                 <Route path="/mi-cuenta" element={
                   <ProtectedRoute>
                     <ProfilePage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/mis-pedidos" element={
+                  <ProtectedRoute>
+                    <MyOrdersPage />
                   </ProtectedRoute>
                 } />
                 <Route path="/nosotros" element={<AboutPage />} />

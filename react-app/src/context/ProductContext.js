@@ -42,7 +42,7 @@ export const ProductProvider = ({ children }) => {
     }
   }, []);
 
-  // Listen for storage changes (when admin updates products)
+  // Listen for storage changes (when admin updates products or checkout updates stock)
   useEffect(() => {
     const handleStorageChange = (e) => {
       if (e.key === 'productos' && e.newValue) {
@@ -55,9 +55,30 @@ export const ProductProvider = ({ children }) => {
       }
     };
 
+    // Listen for both cross-window and same-window storage events
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+    
+    // Also check localStorage periodically for same-window updates
+    const intervalId = setInterval(() => {
+      const savedProducts = localStorage.getItem('productos');
+      if (savedProducts) {
+        try {
+          const parsed = JSON.parse(savedProducts);
+          // Only update if products actually changed
+          if (JSON.stringify(parsed) !== JSON.stringify(products)) {
+            setProducts(parsed);
+          }
+        } catch (error) {
+          console.error('Error checking products:', error);
+        }
+      }
+    }, 2000); // Check every 2 seconds
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(intervalId);
+    };
+  }, [products]);
 
   // Apply filters whenever products or filters change
   useEffect(() => {

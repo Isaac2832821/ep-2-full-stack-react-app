@@ -144,6 +144,7 @@ const CheckoutPage = () => {
       // Create order
       const order = {
         id: `ORD-${Date.now()}`,
+        date: new Date().toISOString().split('T')[0],
         fecha: new Date().toISOString(),
         items: cart,
         customer: {
@@ -157,6 +158,7 @@ const CheckoutPage = () => {
           region: formData.region,
           comuna: formData.comuna
         },
+        shippingAddress: `${formData.direccion}, ${formData.comuna}, ${formData.region}`,
         payment: {
           method: formData.paymentMethod,
           lastFourDigits: formData.cardNumber.slice(-4)
@@ -164,13 +166,39 @@ const CheckoutPage = () => {
         subtotal,
         iva,
         total,
-        estado: 'pending'
+        status: 'pending',
+        estado: 'pending',
+        userId: user?.id || null
       };
 
-      // Save order to localStorage (using 'ventas' key for compatibility)
-      const orders = JSON.parse(localStorage.getItem('ventas') || '[]');
-      orders.unshift(order); // Add to beginning
-      localStorage.setItem('ventas', JSON.stringify(orders));
+      // Save order to localStorage (both 'ventas' and 'orders' for compatibility)
+      const ventas = JSON.parse(localStorage.getItem('ventas') || '[]');
+      ventas.unshift(order);
+      localStorage.setItem('ventas', JSON.stringify(ventas));
+
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      orders.unshift(order);
+      localStorage.setItem('orders', JSON.stringify(orders));
+
+      // Update product stock
+      const productos = JSON.parse(localStorage.getItem('productos') || '[]');
+      const updatedProductos = productos.map(producto => {
+        const cartItem = cart.find(item => item.id === producto.id);
+        if (cartItem) {
+          return {
+            ...producto,
+            stock: Math.max(0, producto.stock - cartItem.quantity)
+          };
+        }
+        return producto;
+      });
+      localStorage.setItem('productos', JSON.stringify(updatedProductos));
+      
+      // Trigger storage event for same-window updates
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'productos',
+        newValue: JSON.stringify(updatedProductos)
+      }));
 
       // Clear cart
       clearCart();
