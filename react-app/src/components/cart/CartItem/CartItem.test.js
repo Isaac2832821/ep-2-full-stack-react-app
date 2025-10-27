@@ -33,7 +33,7 @@ describe('CartItem Component', () => {
   });
 
   it('should call onUpdateQuantity when increase button is clicked', () => {
-    render(
+    const { container } = render(
       <CartItem
         item={mockItem}
         onUpdateQuantity={mockUpdateQuantity}
@@ -41,14 +41,14 @@ describe('CartItem Component', () => {
       />
     );
 
-    const increaseButton = screen.getByRole('button', { name: '' }).parentElement.querySelector('.fa-plus').parentElement;
+    const increaseButton = container.querySelector('.fa-plus').closest('button');
     fireEvent.click(increaseButton);
 
     expect(mockUpdateQuantity).toHaveBeenCalledWith(mockItem.id, 3);
   });
 
   it('should call onUpdateQuantity when decrease button is clicked', () => {
-    render(
+    const { container } = render(
       <CartItem
         item={mockItem}
         onUpdateQuantity={mockUpdateQuantity}
@@ -56,7 +56,7 @@ describe('CartItem Component', () => {
       />
     );
 
-    const decreaseButton = screen.getByRole('button', { name: '' }).parentElement.querySelector('.fa-minus').parentElement;
+    const decreaseButton = container.querySelector('.fa-minus').closest('button');
     fireEvent.click(decreaseButton);
 
     expect(mockUpdateQuantity).toHaveBeenCalledWith(mockItem.id, 1);
@@ -65,7 +65,7 @@ describe('CartItem Component', () => {
   it('should disable decrease button when quantity is 1', () => {
     const itemWithQuantity1 = { ...mockItem, cantidad: 1 };
     
-    render(
+    const { container } = render(
       <CartItem
         item={itemWithQuantity1}
         onUpdateQuantity={mockUpdateQuantity}
@@ -73,7 +73,7 @@ describe('CartItem Component', () => {
       />
     );
 
-    const decreaseButton = screen.getByRole('button', { name: '' }).parentElement.querySelector('.fa-minus').parentElement;
+    const decreaseButton = container.querySelector('.fa-minus').closest('button');
     expect(decreaseButton).toBeDisabled();
   });
 

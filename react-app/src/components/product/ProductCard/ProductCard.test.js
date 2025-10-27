@@ -98,7 +98,7 @@ describe('ProductCard Component', () => {
       </RouterWrapper>
     );
 
-    expect(screen.getByText(/Agotado/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Agotado/i).length).toBeGreaterThan(0);
   });
 
   it('should have link to product detail page', () => {

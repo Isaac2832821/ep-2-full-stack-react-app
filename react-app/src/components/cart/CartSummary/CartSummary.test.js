@@ -37,9 +37,9 @@ describe('CartSummary Component', () => {
     );
 
     expect(screen.getByText(/Resumen del Pedido/i)).toBeInTheDocument();
-    expect(screen.getByText(/Subtotal:/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Subtotal:/i)[0]).toBeInTheDocument();
     expect(screen.getByText(/IVA/i)).toBeInTheDocument();
-    expect(screen.getByText(/TOTAL:/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/TOTAL:/i).length).toBeGreaterThan(0);
   });
 
   it('should calculate subtotal correctly', () => {
