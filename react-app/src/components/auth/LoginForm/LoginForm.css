@@ -1,0 +1,94 @@
+/* Login Form Styles */
+.login-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 300px);
+  padding: 2rem 1rem;
+}
+
+.login-form-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 450px;
+}
+
+.login-form-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-form-header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 0.5rem;
+}
+
+.login-form-header p {
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.login-form-card .input-group-text {
+  background-color: #f8f9fa;
+  border-right: none;
+}
+
+.login-form-card .form-control {
+  border-left: none;
+}
+
+.login-form-card .form-control:focus {
+  border-color: #ced4da;
+  box-shadow: none;
+}
+
+.login-form-card .input-group:focus-within .input-group-text {
+  border-color: #86b7fe;
+}
+
+.login-form-card .input-group:focus-within .form-control {
+  border-color: #86b7fe;
+}
+
+.form-check-label {
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.demo-credentials {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.demo-credentials small {
+  display: block;
+  line-height: 1.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 575px) {
+  .login-form-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .login-form-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .login-form-header p {
+    font-size: 0.9rem;
+  }
+
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start !important;
+  }
+}

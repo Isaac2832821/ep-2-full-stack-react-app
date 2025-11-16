@@ -1,0 +1,78 @@
+/* About Page Styles */
+.about-page {
+  background-color: white;
+}
+
+.about-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.about-header .subtitle {
+  font-size: 1.1rem;
+}
+
+.mission-section h2,
+.values-section h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 1rem;
+}
+
+.values-list {
+  list-style: none;
+  padding: 0;
+}
+
+.values-list li {
+  padding: 0.75rem 0;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.team-card {
+  background-color: #f8f9fa;
+  padding: 2rem;
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.team-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.team-role {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.cta-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 3rem 2rem;
+  border-radius: 12px;
+}
+
+.cta-section h2 {
+  color: white;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 767px) {
+  .about-header h1 {
+    font-size: 2rem;
+  }
+  
+  .cta-section {
+    padding: 2rem 1rem;
+  }
+}

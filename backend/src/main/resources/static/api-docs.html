@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PasoxPaso API Documentation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: #2c3e50; color: white; padding: 30px 0; text-align: center; }
+        h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .subtitle { font-size: 1.2em; opacity: 0.9; }
+        .section { background: white; margin: 20px 0; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; margin-bottom: 20px; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        .endpoint { background: #ecf0f1; padding: 15px; margin: 15px 0; border-radius: 5px; border-left: 4px solid #3498db; }
+        .method { display: inline-block; padding: 5px 15px; border-radius: 3px; font-weight: bold; margin-right: 10px; }
+        .get { background: #27ae60; color: white; }
+        .post { background: #3498db; color: white; }
+        .put { background: #f39c12; color: white; }
+        .delete { background: #e74c3c; color: white; }
+        .url { font-family: 'Courier New', monospace; font-size: 1.1em; color: #2c3e50; }
+        .description { margin-top: 10px; color: #555; }
+        .auth-required { background: #e74c3c; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.85em; }
+        .admin-only { background: #9b59b6; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.85em; }
+        code { background: #f8f9fa; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+        .example { background: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 10px; }
+        pre { overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🛒 PasoxPaso E-commerce API</h1>
+        <p class="subtitle">Documentación de API REST - v1.0</p>
+    </header>
+
+    <div class="container">
+        <div class="section">
+            <h2>📝 Información General</h2>
+            <p><strong>Base URL:</strong> <code>http://localhost:8080/api</code></p>
+            <p><strong>Autenticación:</strong> JWT Bearer Token</p>
+            <p><strong>Formato:</strong> JSON</p>
+        </div>
+
+        <div class="section">
+            <h2>🔐 Autenticación</h2>
+            
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="url">/api/auth/login</span>
+                <p class="description">Iniciar sesión y obtener token JWT</p>
+                <div class="example">
+                    <strong>Request Body:</strong>
+                    <pre>{
+  "email": "admin@pasoxpaso.cl",
+  "password": "admin123"
+}</pre>
+                    <strong>Response:</strong>
+                    <pre>{
+  "success": true,
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiJ9...",
+    "usuario": {
+      "id": 1,
+      "nombre": "Administrador",
+      "email": "admin@pasoxpaso.cl",
+      "rol": "ADMIN"
+    }
+  }
+}</pre>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="url">/api/auth/register</span>
+                <p class="description">Registrar nuevo usuario</p>
+                <div class="example">
+                    <strong>Request Body:</strong>
+                    <pre>{
+  "nombre": "Juan Pérez",
+  "email": "juan@test.com",
+  "password": "Test123",
+  "rut": "12345678-9",
+  "telefono": "+56912345678",
+  "direccion": "Calle Test 123",
+  "region": "Metropolitana",
+  "comuna": "Santiago"
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📦 Productos</h2>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="url">/api/productos</span>
+                <p class="description">Obtener todos los productos (público)</p>
+                <p><strong>Query Params:</strong> categoria, precioMin, precioMax, busqueda</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="url">/api/productos/{id}</span>
+                <p class="description">Obtener producto por ID (público)</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="url">/api/productos/destacados</span>
+                <p class="description">Obtener productos destacados (público)</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="url">/api/productos</span>
+                <span class="auth-required">Auth</span>
+                <span class="admin-only">Admin</span>
+                <p class="description">Crear nuevo producto</p>
+                <div class="example">
+                    <strong>Headers:</strong> <code>Authorization: Bearer {token}</code>
+                    <strong>Request Body:</strong>
+                    <pre>{
+  "nombre": "Nike Air Max",
+  "descripcion": "Zapatillas deportivas",
+  "precio": 89990,
+  "categoria": "nike",
+  "marca": "Nike",
+  "stock": 15,
+  "imagen": "/imagenes/nike.jpg",
+  "destacado": true,
+  "activo": true
+}</pre>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method put">PUT</span>
+                <span class="url">/api/productos/{id}</span>
+                <span class="auth-required">Auth</span>
+                <span class="admin-only">Admin</span>
+                <p class="description">Actualizar producto</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method delete">DELETE</span>
+                <span class="url">/api/productos/{id}</span>
+                <span class="auth-required">Auth</span>
+                <span class="admin-only">Admin</span>
+                <p class="description">Eliminar producto</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🛍️ Pedidos</h2>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="url">/api/pedidos</span>
+                <span class="auth-required">Auth</span>
+                <p class="description">Obtener pedidos del usuario autenticado</p>
+                <p><strong>Headers:</strong> <code>Authorization: Bearer {token}</code></p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="url">/api/pedidos/{id}</span>
+                <span class="auth-required">Auth</span>
+                <p class="description">Obtener detalle de un pedido</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="url">/api/pedidos</span>
+                <span class="auth-required">Auth</span>
+                <p class="description">Crear nuevo pedido</p>
+                <div class="example">
+                    <strong>Headers:</strong> <code>Authorization: Bearer {token}</code>
+                    <strong>Request Body:</strong>
+                    <pre>{
+  "items": [
+    {
+      "productoId": 1,
+      "cantidad": 2
+    }
+  ],
+  "direccionEnvio": "Calle Test 123",
+  "metodoPago": "TARJETA"
+}</pre>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="url">/api/pedidos/admin/todos</span>
+                <span class="auth-required">Auth</span>
+                <span class="admin-only">Admin</span>
+                <p class="description">Obtener todos los pedidos</p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method put">PUT</span>
+                <span class="url">/api/pedidos/{id}/estado</span>
+                <span class="auth-required">Auth</span>
+                <span class="admin-only">Admin</span>
+                <p class="description">Actualizar estado de pedido</p>
+                <p><strong>Query Param:</strong> estado (PENDIENTE, PROCESANDO, ENVIADO, ENTREGADO, CANCELADO)</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔑 Autenticación JWT</h2>
+            <p>Para acceder a endpoints protegidos, incluye el token en el header:</p>
+            <div class="example">
+                <code>Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...</code>
+            </div>
+            <p style="margin-top: 15px;"><strong>Expiración:</strong> 24 horas</p>
+            <p><strong>Roles:</strong> ADMIN, USUARIO</p>
+        </div>
+
+        <div class="section">
+            <h2>📊 Códigos de Estado</h2>
+            <ul style="line-height: 2;">
+                <li><strong>200 OK:</strong> Solicitud exitosa</li>
+                <li><strong>400 Bad Request:</strong> Datos inválidos</li>
+                <li><strong>401 Unauthorized:</strong> Token inválido o expirado</li>
+                <li><strong>403 Forbidden:</strong> Sin permisos</li>
+                <li><strong>404 Not Found:</strong> Recurso no encontrado</li>
+                <li><strong>500 Internal Server Error:</strong> Error del servidor</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>👤 Usuario de Prueba</h2>
+            <p><strong>Email:</strong> admin@pasoxpaso.cl</p>
+            <p><strong>Password:</strong> admin123</p>
+            <p><strong>Rol:</strong> ADMIN</p>
+        </div>
+    </div>
+</body>
+</html>

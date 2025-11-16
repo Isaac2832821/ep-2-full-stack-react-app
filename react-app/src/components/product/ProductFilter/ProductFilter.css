@@ -1,0 +1,67 @@
+/* Product Filter Styles */
+.product-filter {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product-filter .input-group-text {
+  background-color: #f8f9fa;
+  border-right: none;
+}
+
+.product-filter .form-control {
+  border-left: none;
+}
+
+.product-filter .form-control:focus {
+  border-color: #ced4da;
+  box-shadow: none;
+}
+
+.product-filter .form-control:focus + .input-group-text,
+.product-filter .input-group-text + .form-control:focus {
+  border-color: #86b7fe;
+}
+
+.product-filter .form-select {
+  cursor: pointer;
+}
+
+.product-filter .btn-outline-secondary:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.filter-results {
+  padding-top: 0.75rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.filter-results p {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .product-filter {
+    padding: 1rem;
+  }
+
+  .product-filter .row {
+    row-gap: 0.75rem;
+  }
+
+  .filter-results {
+    text-align: center;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .product-filter .col-md-2 {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+}
