@@ -1,15 +1,12 @@
-# Build stage
 FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /build
 COPY pom.xml .
 COPY src ./src
-RUN mvn clean package -DskipTests -X
-RUN ls -la target/
+RUN mvn clean package -DskipTests
 
-# Run stage  
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17-jre
 WORKDIR /app
-COPY --from=build /build/target/*.jar app.jar
-RUN ls -la /app/
+COPY --from=build /build/target/backend-0.0.1-SNAPSHOT.jar app.jar
+ENV SPRING_PROFILES_ACTIVE=railway
 EXPOSE 8080
-ENTRYPOINT ["java", "-Dspring.profiles.active=railway", "-jar", "app.jar"]
+CMD ["java", "-jar", "app.jar"]
