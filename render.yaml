@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: pasoxpaso-backend
+    env: java
+    buildCommand: chmod +x ./mvnw && ./mvnw clean package -DskipTests
+    startCommand: java -Dspring.profiles.active=render -jar target/backend-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: JAVA_VERSION
+        value: 17
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
