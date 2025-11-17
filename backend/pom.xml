@@ -54,10 +54,17 @@
 			<scope>runtime</scope>
 		</dependency>
 		
-		<!-- MySQL Database (para producción) -->
+		<!-- MySQL Database (para producción local) -->
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<!-- PostgreSQL (para Render) -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
